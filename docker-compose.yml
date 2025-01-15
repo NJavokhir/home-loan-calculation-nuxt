@@ -1,0 +1,13 @@
+networks:
+  nuxt_network:
+    driver: bridge
+
+services:
+  nuxt:
+    image: nuxt-app
+    build:
+      context: .
+    ports:
+      - "3000:3000"  # Map localhost:3001 to container:3000
+    networks:
+      - nuxt_network
