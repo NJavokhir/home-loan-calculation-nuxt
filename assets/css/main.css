@@ -1,0 +1,24 @@
+body,
+html {
+  font-family: 'Inter', sans-serif !important;
+  margin: 0 auto;
+  padding: 0;
+  max-width: 375px !important;
+  height: 100%;
+  box-sizing:content-box;
+}
+
+[class^="v-"]::before,
+[class^="v-"]::after {
+  content: none !important;
+  display: none !important;
+}
+
+.v-field--variant-filled .v-field__overlay {
+  background-color: transparent !important;
+  opacity: 0 !important;
+}
+
+.v-btn.v-btn--density-default {
+  height: 100% !important;
+}

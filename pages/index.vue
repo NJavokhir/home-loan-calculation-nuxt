@@ -1,83 +1,137 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify ++ Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+  <v-app>
+    <!-- <v-app-bar app class="bg-white" style="background-color: white;">
+      <v-btn icon @click="goBack">
+        <v-icon class="w-6 h-6">mdi-arrow-left</v-icon>
+      </v-btn>
+
+      <v-toolbar-title class="text-center font-weight-medium ml-n5">Calculator</v-toolbar-title>
+    </v-app-bar> -->
+    <div class="toolbar-style container">
+      <img @click="goBack" src="@/assets/icon.svg" alt="">
+      Calculator
+    </div>
+    <v-container>
+      <v-tabs v-model="activeTab" hide-slider align-tabs="center" class="mb-6">
+        <v-tab>Mortgage</v-tab>
+        <v-tab>EPF Withdrawal</v-tab>
+        <v-tab>Legal Fee</v-tab>
+      </v-tabs>
+
+      <v-tabs-items v-model="activeTab">
+        <v-tab-item v-show="activeTab === 0">
+          <MortgageTab />
+        </v-tab-item>
+        <v-tab-item v-show="activeTab === 1">
+          <EPFWithdrawalTab />
+        </v-tab-item>
+        <v-tab-item v-show="activeTab === 2">
+          <LegalFeeTab />
+        </v-tab-item>
+      </v-tabs-items>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
+import MortgageTab from "@/components/MortgageTab.vue";
+import EPFWithdrawalTab from "@/components/EpfWithdrawalTab.vue";
+import LegalFeeTab from "@/components/LegalFeeTab.vue";
+
 export default {
-  name: 'IndexPage'
-}
+  components: {
+    MortgageTab,
+    EPFWithdrawalTab,
+    LegalFeeTab,
+  },
+  data() {
+    return {
+      activeTab: 0,
+    };
+  },
+  methods: {
+    goBack() {
+      this.$router.back();
+    },
+  },
+};
 </script>
+
+<style scoped>
+.v-tab {
+  font-weight: 500;
+  border-radius: 20px !important;
+  padding: 4px 8px !important;
+  margin-right: 8px;
+  background-color: #F4F4F7;
+  text-transform: none;
+  align-self: center;
+}
+
+.v-tabs--density-default {
+  --v-tabs-height: 30px;
+}
+
+.v-tab--selected {
+  background-color: #E5F8F7 !important;
+  color: #00B5B0;
+  border: none;
+}
+
+.container {
+  width: 100%;
+  padding: 16px !important;
+  margin-right: auto;
+  margin-left: auto;
+  background-color: #FAFBFB !important;
+}
+
+.v-sheet.v-card:not(.v-sheet--outlined) {
+  box-shadow: none !important;
+}
+
+.theme--light.v-tabs>.v-tabs-bar {
+  background-color: none !important;
+}
+
+.v-slide-group__prev,
+.v-slide-group__prev--disabled {
+  display: none !important;
+}
+
+.v-app-bar.v-app-bar--fixed {
+  position: relative !important;
+}
+
+.v-tab.v-tab {
+  color: #00B5B0;
+}
+
+.v-slide-group__wrapper {
+  background-color: #FAFBFB !important;
+}
+
+.v-slide-group__content .v-tabs-bar__content {
+  background-color: #FAFBFB !important;
+}
+
+.toolbar-style {
+  width: 100%;
+  position: relative;
+  padding: 18px auto !important;
+  background-color: white !important;
+  align-items: center !important;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 24px;
+  color: #191B1F;
+}
+
+.toolbar-style img {
+  position: absolute;
+  left: 0;
+  margin: auto auto auto 34px;
+  cursor: pointer;
+}
+</style>
