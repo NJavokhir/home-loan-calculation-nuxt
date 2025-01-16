@@ -27,9 +27,9 @@
 </template>
 
 <script>
-import MortgageTab from "@/components/MortgageTab.vue";
-import EPFWithdrawalTab from "@/components/EpfWithdrawalTab.vue";
-import LegalFeeTab from "@/components/LegalFeeTab.vue";
+import MortgageTab from "../components/MortgageTab.vue";
+import EPFWithdrawalTab from "../components/EpfWithdrawalTab.vue";
+import LegalFeeTab from "../components/LegalFeeTab.vue";
 
 export default {
   components: {
