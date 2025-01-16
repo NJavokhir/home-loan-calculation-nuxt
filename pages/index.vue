@@ -16,7 +16,7 @@
           <MortgageTab />
         </v-tab-item>
         <v-tab-item v-show="activeTab === 1">
-          <EPFWithdrawalTab />
+          <!-- <EPFWithdrawalTab /> -->
         </v-tab-item>
         <v-tab-item v-show="activeTab === 2">
           <LegalFeeTab />
@@ -28,7 +28,7 @@
 
 <script>
 import MortgageTab from "@/components/MortgageTab.vue";
-import EPFWithdrawalTab from "@/components/EpfWithdrawalTab.vue";
+// import EPFWithdrawalTab from "@/components/EpfWithdrawalTab.vue";
 import LegalFeeTab from "@/components/LegalFeeTab.vue";
 
 export default {
