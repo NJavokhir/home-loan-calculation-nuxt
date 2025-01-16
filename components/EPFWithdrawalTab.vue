@@ -2,44 +2,42 @@
     <!-- Card container for the EPF form -->
     <v-card class="epf-card">
 
-        <!-- Radio group for selecting the withdrawal purpose -->
-        <v-radio-group inline v-model="withdrawalPurpose" hide-details class="mb-5">
-            <v-row>
-                <v-col cols="6">
-                    <v-radio value="purchase" class="purpose-radio" color="#00B5B0"
-                        :class="{ 'selected-radio': withdrawalPurpose === 'purchase' }">
-                        <template #label>
-                            <span :class="withdrawalPurpose === 'purchase' ? 'selected-label' : 'default-label'">
-                                Withdrawal to purchase/build a house
-                            </span>
-                        </template>
-                    </v-radio>
-                </v-col>
-                <v-col cols="6">
-                    <v-radio value="redeem" class="purpose-radio" color="#00B5B0"
-                        :class="{ 'selected-radio': withdrawalPurpose === 'redeem' }">
-                        <template #label>
-                            <span :class="withdrawalPurpose === 'redeem' ? 'selected-label' : 'default-label'">
-                                Withdrawal to reduce/redeem a housing loan
-                            </span>
-                        </template>
-                    </v-radio>
-                </v-col>
-            </v-row>
-        </v-radio-group>
+        <div class="custom-radio-group">
+            <!-- Radio 1 -->
+            <label class="radio-container"
+                :class="{ 'radio-container-checked': withdrawalPurpose === 'purchase', 'default-label': withdrawalPurpose !== 'purchase' }">
+                <input type="radio" name="withdrawalPurpose" value="purchase" v-model="withdrawalPurpose" hidden />
+                <span class="custom-radio"></span>
+                <span class="radio-label"
+                    :class="{ 'selected-label': withdrawalPurpose === 'purchase', 'default-label': withdrawalPurpose !== 'purchase' }">
+                    Withdrawal to purchase/build a house
+                </span>
+            </label>
+
+            <!-- Radio 2 -->
+            <label class="radio-container"
+                :class="{ 'radio-container-checked': withdrawalPurpose === 'redeem', 'default-label': withdrawalPurpose !== 'redeem' }">
+                <input type="radio" name="withdrawalPurpose" value="redeem" v-model="withdrawalPurpose" hidden />
+                <span class="custom-radio" style="width: 42px !important;"></span>
+                <span class="radio-label"
+                    :class="{ 'selected-label': withdrawalPurpose === 'redeem', 'default-label': withdrawalPurpose !== 'redeem' }">
+                    Withdrawal to reduce/redeem a housing loan
+                </span>
+            </label>
+        </div>
 
         <!-- Calculator section -->
         <h4 class="font-weight-medium text-left mb-4">Calculator</h4>
         <div class="input-group">
-            <v-label class="custom-label">Property Price</v-label>
+            <v-label class="custom-label">Property Price <span style="color: red; font-size: 12px;">*</span></v-label>
             <v-text-field v-model="maskedPrice" type="text" class="input-field" hide-details hide-spin-buttons
                 placeholder="Property Price" @input="handleInput('price', $event)">
                 <template #prepend-inner>
-                    <span class="prepend-text">RM</span>
+                    <span class="prepend-text prepend-style">RM</span>
                 </template>
             </v-text-field>
 
-            <v-label class="custom-label">Loan Amount</v-label>
+            <v-label class="custom-label">Loan Amount <span style="color: red; font-size: 12px;">*</span></v-label>
             <v-text-field v-model="maskedLoan" type="text" class="input-field" hide-details hide-spin-buttons
                 placeholder="Loan Amount" @input="handleInput('loan', $event)">
                 <template #prepend-inner>
@@ -54,11 +52,11 @@
                 </template>
             </v-text-field>
 
-            <v-label class="custom-label">Balance in Account II</v-label>
+            <v-label class="custom-label">Balance in Account II <span style="color: red; font-size: 12px;">*</span></v-label>
             <v-text-field v-model="maskedBalance" type="text" class="input-field" hide-details hide-spin-buttons
                 placeholder="Balance in Account II" @input="handleInput('balance', $event)">
                 <template #prepend-inner>
-                    <span class="prepend-text">RM</span>
+                    <span class="prepend-text prepend-style">RM</span>
                 </template>
             </v-text-field>
         </div>
@@ -78,6 +76,7 @@
 </template>
 
 <script>
+import { formatCurrency } from '@/utils/currencyUtils'; // Assuming formatCurrency is a utility function
 export default {
     data() {
         return {
@@ -112,7 +111,7 @@ export default {
     },
     methods: {
         handleInput(field, event) {
-            let rawValue = event.target.value.replace(/[^\d.]/g, '');
+            let rawValue = event.replace(/[^\d.]/g, '');
 
             if (rawValue.startsWith('-')) {
                 rawValue = rawValue.slice(1);
@@ -177,39 +176,18 @@ export default {
     background-color: #FAFBFB;
 }
 
-.purpose-radio {
-    border: 1px solid #EDEDF3;
-    padding: 5px 10px 5px 0px;
-    border-radius: 8px;
-    transition: border-color 0.3s ease;
-    background-color: white;
-}
-
-.purpose-radio.selected-radio {
-    border: 1px solid #00B5B0;
-}
-
-.default-label {
-    font-size: 12px;
-    font-weight: 400;
-    color: #6B6F89;
-    white-space: normal;
-    word-wrap: break-word;
-    line-height: 14px;
-}
-
-.selected-label {
-    font-size: 12px;
-    font-weight: 400;
-    color: #00B5B0;
-    white-space: normal;
-    word-wrap: break-word;
-    line-height: 14px;
-}
-
 .input-group {
     display: flex;
     flex-direction: column;
+    padding-right: 16px;
+    padding-left: 2px;
+}
+
+.v-text-field {
+    padding-top: 10px !important;
+    margin-top: 4px !important;
+    padding-bottom: 10px !important;
+    padding-left: 10px !important;
 }
 
 .input-field {
@@ -271,10 +249,10 @@ export default {
 }
 
 .calculate-btn {
-    width: 100%;
-    height: 52px;
-    background-color: #00B5B0;
-    color: #F9F8F8;
+    width: 343px;
+    height: 52px !important;
+    background-color: #00B5B0 !important;
+    color: #F9F8F8 !important;
     text-align: center;
     padding: 14px 16px;
     font-size: 16px;
@@ -282,5 +260,118 @@ export default {
     line-height: 24px;
     text-transform: none;
     margin-bottom: 24px;
+}
+
+.theme--light.v-btn.v-btn--has-bg {
+    background-color: #00B5B0 !important;
+}
+
+.v-btn:not(.v-btn--round).v-size--default {
+    height: 52px !important;
+    min-width: 64px;
+    padding: 0 16px;
+}
+
+.theme--light.v-btn.v-btn--disabled {
+    color: #F9F8F8 !important;
+}
+
+
+
+
+/* Radio Group Styling */
+.custom-radio-group {
+    display: flex;
+    flex-wrap: row;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+/* Label Styling */
+.radio-container {
+    width: 167px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid #ededf3;
+    border-radius: 8px;
+    background-color: white;
+    transition: border-color 0.3s ease;
+}
+
+/* Border change when radio is selected */
+.radio-container input[type="radio"]:checked+.custom-radio {
+    border-color: #00b5b0;
+    background-color: #00b5b0;
+}
+
+/* Custom Radio Circle */
+.custom-radio {
+    width: 35px !important;
+    height: 20px !important;
+    white-space: inherit;
+    border: 2px solid #ededf3;
+    border-radius: 50%;
+    display: inline-block;
+    position: relative;
+    background-color: white;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.custom-radio::after {
+    content: "";
+    width: 10px;
+    height: 10px;
+    background-color: white;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Inner dot when selected */
+.radio-container input[type="radio"]:checked+.custom-radio::after {
+    background-color: white;
+    opacity: 1;
+}
+
+/* Text Styling */
+.radio-label {
+    font-size: 12px;
+    font-weight: 400;
+    color: #6b6f89;
+    line-height: 14px;
+}
+
+.radio-label.selected-label {
+    color: #00b5b0;
+    border-color: #00b5b0;
+}
+
+.radio-label.default-label {
+    color: #6b6f89;
+}
+
+/* Hover Effect */
+.radio-container-checked {
+    border: 1px solid #00b5b0 !important;
+}
+
+.v-application .rounded-lg {
+    border-radius: 8px !important;
+    background: white;
+}
+
+.v-application p {
+    margin-bottom: 0 !important;
+}
+
+.prepend-style {
+    margin-top: 6px;
 }
 </style>

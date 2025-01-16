@@ -1,21 +1,14 @@
 <template>
   <v-app>
-    <!-- <v-app-bar app class="bg-white" style="background-color: white;">
-      <v-btn icon @click="goBack">
-        <v-icon class="w-6 h-6">mdi-arrow-left</v-icon>
-      </v-btn>
-
-      <v-toolbar-title class="text-center font-weight-medium ml-n5">Calculator</v-toolbar-title>
-    </v-app-bar> -->
-    <div class="toolbar-style container">
+    <div class="toolbar-style">
       <img @click="goBack" src="@/assets/icon.svg" alt="">
       Calculator
     </div>
     <v-container>
-      <v-tabs v-model="activeTab" hide-slider align-tabs="center" class="mb-6">
-        <v-tab>Mortgage</v-tab>
-        <v-tab>EPF Withdrawal</v-tab>
-        <v-tab>Legal Fee</v-tab>
+      <v-tabs v-model="activeTab" hide-slider align-tabs="center" class="mb-6" background-color="#FAFBFB">
+        <v-tab :style="activeTab === 0 ? 'background-color: #E5F8F7;' : ''">Mortgage</v-tab>
+        <v-tab :style="activeTab === 1 ? 'background-color: #E5F8F7;' : ''">EPF Withdrawal</v-tab>
+        <v-tab :style="activeTab === 2 ? 'background-color: #E5F8F7;' : ''">Legal Fee</v-tab>
       </v-tabs>
 
       <v-tabs-items v-model="activeTab">
@@ -61,7 +54,7 @@ export default {
 .v-tab {
   font-weight: 500;
   border-radius: 20px !important;
-  padding: 4px 8px !important;
+  padding: 6px 8px !important;
   margin-right: 8px;
   background-color: #F4F4F7;
   text-transform: none;
@@ -72,51 +65,27 @@ export default {
   --v-tabs-height: 30px;
 }
 
-.v-tab--selected {
-  background-color: #E5F8F7 !important;
-  color: #00B5B0;
-  border: none;
-}
-
 .container {
-  width: 100%;
+  width: 375px !important;
   padding: 16px !important;
   margin-right: auto;
   margin-left: auto;
   background-color: #FAFBFB !important;
+  height: 100vh;
 }
 
 .v-sheet.v-card:not(.v-sheet--outlined) {
   box-shadow: none !important;
 }
 
-.theme--light.v-tabs>.v-tabs-bar {
-  background-color: none !important;
-}
-
-.v-slide-group__prev,
-.v-slide-group__prev--disabled {
-  display: none !important;
-}
-
-.v-app-bar.v-app-bar--fixed {
-  position: relative !important;
-}
-
 .v-tab.v-tab {
   color: #00B5B0;
-}
-
-.v-slide-group__wrapper {
-  background-color: #FAFBFB !important;
-}
-
-.v-slide-group__content .v-tabs-bar__content {
-  background-color: #FAFBFB !important;
+  ;
 }
 
 .toolbar-style {
-  width: 100%;
+  width: 375px;
+  height: 60px;
   position: relative;
   padding: 18px auto !important;
   background-color: white !important;
@@ -126,12 +95,15 @@ export default {
   font-weight: 500;
   line-height: 24px;
   color: #191B1F;
+  margin-right: auto;
+  margin-left: auto;
+  align-content: center;
 }
 
 .toolbar-style img {
   position: absolute;
   left: 0;
-  margin: auto auto auto 34px;
+  margin: auto auto auto 15px;
   cursor: pointer;
 }
 </style>

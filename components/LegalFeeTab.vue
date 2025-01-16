@@ -12,20 +12,24 @@
 
         <!-- Checkbox for selecting first-time homebuyer status -->
         <div class="buying-house">
-            <v-checkbox v-model="isChecked" hide-details label="First time buying house"></v-checkbox>
+            <label>
+                <input type="checkbox" v-model="isChecked" />
+                <span class="checkmark"></span>
+                First time buying a house
+            </label>
         </div>
 
         <!-- Property price input field -->
-        <v-label class="custom-label">Property Price</v-label>
+        <v-label class="custom-label">Property Price <span style="color: red; font-size: 12px;">*</span></v-label>
         <v-text-field v-model="maskedPrice" type="text" class="input-field" hide-details hide-spin-buttons
             placeholder="Property Price" @input="handleInput('price', $event)">
             <template #prepend-inner>
-                <span class="prepend-text">RM</span>
+                <span class="prepend-text prepend-style">RM</span>
             </template>
         </v-text-field>
 
         <!-- Loan Amount input field with unit selection (percentage or RM) as design-->
-        <v-label class="custom-label">Loan Amount</v-label>
+        <v-label class="custom-label">Loan Amount <span style="color: red; font-size: 12px;">*</span></v-label>
         <v-text-field v-model="maskedLoan" type="text" class="input-field" hide-details hide-spin-buttons
             placeholder="Loan Amount" @input="handleInput('loan', $event)">
             <template #prepend-inner>
@@ -83,66 +87,78 @@
         </div>
     </v-card>
 </template>
-
 <script>
+import { formatCurrency } from "@/utils/currencyUtils";
+
 export default {
     data() {
         return {
-            propertyPrice: '',
-            loanAmountActual: '',
-            loanAmountActualType: 'RM',
+            propertyPrice: "",
+            loanAmountActual: "",
+            loanAmountActualType: "RM",
             isChecked: false,
-
             legalFee: null,
             stampDutySPA: null,
             loanLegalFee: null,
             loanStampDuty: null,
-
-            maskedPrice: '',
-            maskedLoan: ''
+            maskedPrice: "",
+            maskedLoan: "",
         };
     },
-
-    watch: {
-        loanAmountActual(newLoanAmount) {
-            if (this.loanAmountActualType === '%' && newLoanAmount > 100) {
-                alert('The loan amount cannot exceed 100%. Please enter a valid loan amount.');
-                this.loanAmountActual = '';
-                this.maskedLoan = '';
-            }
-        }
+    computed: {
+        // Total Legal Fee
+        totalLegalFee() {
+            return parseFloat(this.legalFee || 0) + parseFloat(this.stampDutySPA || 0);
+        },
+        // Total Loan Fee
+        totalLoanFee() {
+            return parseFloat(this.loanStampDuty || 0) + parseFloat(this.loanLegalFee || 0);
+        },
     },
-
+    watch: {
+        // Watch loanAmountActual when type is '%'
+        loanAmountActual(newLoanAmount) {
+            if (this.loanAmountActualType === "%" && newLoanAmount > 100) {
+                alert(
+                    "The loan amount cannot exceed 100%. Please enter a valid loan amount."
+                );
+                this.loanAmountActual = "";
+                this.maskedLoan = "";
+            }
+        },
+    },
     methods: {
+        // Handle input and update both masked and actual value
         handleInput(field, event) {
-            let rawValue = event.target.value.replace(/[^\d.]/g, '');
+            let rawValue = event.replace(/[^\d.]/g, "");
 
-            if (rawValue.startsWith('-')) {
+            if (rawValue.startsWith("-")) {
                 rawValue = rawValue.slice(1);
             }
 
-            if (field === 'price') {
-                this.propertyPrice = parseInt(rawValue.replace(/[^0-9]/g, ''), 10) || 0;
-                this.maskedPrice = this.formatCurrency(rawValue);
-            } else if (field === 'loan') {
-                this.loanAmountActual = parseInt(rawValue.replace(/[^0-9]/g, ''), 10) || 0;
-                this.maskedLoan = this.formatCurrency(rawValue);
+            if (field === "price") {
+                this.propertyPrice = parseInt(rawValue.replace(/[^0-9]/g, ""), 10) || 0;
+                this.maskedPrice = formatCurrency(rawValue);
+            } else if (field === "loan") {
+                this.loanAmountActual =
+                    parseInt(rawValue.replace(/[^0-9]/g, ""), 10) || 0;
+                this.maskedLoan = formatCurrency(rawValue);
             }
         },
-
+        // Toggle loan amount type
         toggleLoanAmountType(type) {
             this.loanAmountActualType = type;
-            this.loanAmountActual = '';
-            this.maskedLoan = '';
+            this.loanAmountActual = "";
+            this.maskedLoan = "";
         },
-
+        // Calculate legal fee
         calculateLegalFee() {
             if (!this.propertyPrice || !this.loanAmountActual) {
                 this.legalFee = null;
                 this.stampDutySPA = null;
                 this.loanLegalFee = null;
                 this.loanStampDuty = null;
-                alert('Please fill all the fields correctly.');
+                alert("Please fill all the fields correctly.");
                 return;
             }
 
@@ -179,10 +195,13 @@ export default {
             }
 
             // Loan Stamp Duty Calculation (0.5% of the loan amount)
-            loanAmount = this.loanAmountActualType === '%' ? price - price * (1 - parseFloat(this.loanAmountActual) / 100) : parseFloat(this.loanAmountActual);
+            loanAmount =
+                this.loanAmountActualType === "%"
+                    ? price - price * (1 - parseFloat(this.loanAmountActual) / 100)
+                    : parseFloat(this.loanAmountActual);
             loanStampDutyAmount = loanAmount * 0.005;
 
-            // Loan Legal Fee Calculation (same tiered structure as legal fee)
+            // Loan Legal Fee Calculation
             if (loanAmount <= 500000) {
                 loanFee = loanAmount * 0.01;
             } else if (loanAmount <= 1000000) {
@@ -192,7 +211,10 @@ export default {
             } else if (loanAmount <= 7500000) {
                 loanFee = 21000 + (loanAmount - 3000000) * 0.005;
             } else {
-                loanFee = Math.min(46000 + (loanAmount - 7500000) * 0.01, loanAmount * 0.01);
+                loanFee = Math.min(
+                    46000 + (loanAmount - 7500000) * 0.01,
+                    loanAmount * 0.01
+                );
             }
 
             // Apply discount for first-time buyers
@@ -207,15 +229,10 @@ export default {
             this.loanStampDuty = loanStampDutyAmount;
             this.loanLegalFee = loanFee;
         },
-
-        formatCurrency(value) {
-            return value
-                ? value.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-                : '';
-        }
-    }
+    },
 };
 </script>
+
 
 <style scoped>
 .legalfee-card {
@@ -232,18 +249,6 @@ a {
     line-height: 20px;
 }
 
-.note-class {
-    width: 100%;
-    border-radius: 8px;
-    background-color: #FFE7D0;
-    border: 1px solid #EDEDF3;
-    padding: 12px;
-    font-size: 14px;
-    font-weight: 400;
-    color: #FF8C1B;
-    line-height: 22px;
-}
-
 .stamp-duty {
     width: 100%;
     font-size: 14px;
@@ -254,11 +259,62 @@ a {
 }
 
 .buying-house {
-    width: 100%;
+    width: 340px;
     border: 1px solid #DBDEEB;
     background-color: #F1F2F8;
     border-radius: 16px;
     margin-bottom: 16px;
+    padding: 16px;
+}
+
+.buying-house label {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 14px !important;
+    color: #6B6F89;
+    user-select: none;
+    font-weight: 400;
+}
+
+.buying-house input[type="checkbox"] {
+    display: none;
+}
+
+.buying-house .checkmark {
+    width: 20px;
+    height: 20px;
+    background-color: #F9F8F8;
+    border: 1px solid #DBDEEB;
+    border-radius: 8px;
+    margin-right: 20px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+/* Checkmark when checked */
+.buying-house input[type="checkbox"]:checked+.checkmark {
+    background-color: #00B5B0;
+    /* Green color when checked */
+    border-color: #00B5B0;
+}
+
+.buying-house input[type="checkbox"]:checked+.checkmark::after {
+    content: "";
+    position: absolute;
+    left: 5px;
+    top: 1px;
+    width: 8px;
+    height: 14px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+/* Hover effect */
+.buying-house label:hover .checkmark {
+    border-color: #777;
+    background-color: #e8e8e8;
 }
 
 .selected-label {
@@ -273,6 +329,16 @@ a {
 .input-group {
     display: flex;
     flex-direction: column;
+    padding-right: 16px;
+    padding-left: 2px;
+}
+
+.v-text-field {
+    padding-top: 10px !important;
+    margin-top: 4px !important;
+    padding-bottom: 10px !important;
+    padding-left: 10px !important;
+    width: 360px !important;
 }
 
 .input-field {
@@ -334,7 +400,7 @@ a {
 }
 
 .legal-result {
-    width: 100%;
+    width: 349px;
     border: 1px solid #EDEDF3;
     padding: 12px;
     background-color: white;
@@ -353,7 +419,7 @@ a {
 }
 
 .calculate-btn {
-    width: 100%;
+    width: 342px;
     height: 52px;
     background-color: #00B5B0;
     color: #F9F8F8;
@@ -364,5 +430,35 @@ a {
     line-height: 24px;
     text-transform: none;
     margin-bottom: 24px;
+}
+
+.theme--light.v-btn.v-btn--has-bg {
+    background-color: #00B5B0 !important;
+}
+
+.v-btn:not(.v-btn--round).v-size--default {
+    height: 52px !important;
+    min-width: 64px;
+    padding: 0 16px;
+}
+
+.theme--light.v-btn.v-btn--disabled {
+    color: #F9F8F8 !important;
+}
+
+.note-class {
+    width: 350px;
+    border-radius: 8px;
+    background-color: #FFE7D0;
+    border: 1px solid #EDEDF3;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 400;
+    color: #FF8C1B;
+    line-height: 22px;
+}
+
+.prepend-style {
+    margin-top: 6px;
 }
 </style>

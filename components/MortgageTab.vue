@@ -63,15 +63,15 @@
         <!-- Calculator Section -->
         <h4 class="font-weight-medium text-left mb-4">Calculator</h4>
         <div class="input-group">
-            <v-label class="custom-label">Property Price</v-label>
+            <v-label class="custom-label">Property Price <span style="color: red; font-size: 12px;">*</span></v-label>
             <v-text-field v-model="maskedPrice" type="text" class="input-field" hide-details hide-spin-buttons
                 placeholder="Property Price" @input="handleInput('price', $event)">
                 <template #prepend-inner>
-                    <span class="prepend-text">RM</span>
+                    <span class="prepend-text prepend-style">RM</span>
                 </template>
             </v-text-field>
 
-            <v-label class="custom-label">Downpayment</v-label>
+            <v-label class="custom-label">Downpayment <span style="color: red; font-size: 12px;">*</span></v-label>
             <v-text-field v-model="maskedDown" type="text" class="input-field" hide-details hide-spin-buttons
                 placeholder="Downpayment" @input="handleInput('down', $event)">
                 <template #prepend-inner>
@@ -87,25 +87,27 @@
             </v-text-field>
 
             <v-row>
-                <v-col cols="6">
-                    <v-label class="custom-label">Interest Rate</v-label>
-                    <v-text-field v-model="interestRate" type="text" class="input-field" hide-details hide-spin-buttons
+                <v-col cols="5.5">
+                    <label class="custom-label">Interest Rate <span
+                            style="color: red; font-size: 12px;">*</span></label>
+                    <v-text-field v-model="interestRate" type="text" class="input-field" hide-details
                         placeholder="Interest Rate" @input="handleInput('interest', $event)">
                         <template #prepend-inner>
-                            <span class="prepend-text">%</span>
+                            <span class="prepend-text prepend-style">%</span>
                         </template>
                     </v-text-field>
                 </v-col>
-                <v-col cols="6">
-                    <v-label class="custom-label">Loan Tenure</v-label>
-                    <v-text-field v-model="loanTenure" type="text" class="input-field" hide-details hide-spin-buttons
+                <v-col cols="5.5">
+                    <label class="custom-label">Loan Tenure <span style="color: red; font-size: 12px;">*</span></label>
+                    <v-text-field v-model="loanTenure" type="text" class="input-field" hide-details
                         placeholder="Loan Tenure" @input="handleInput('tenure', $event)">
                         <template #prepend-inner>
-                            <span class="prepend-text">Yrs</span>
+                            <span class="prepend-text prepend-style">Yrs</span>
                         </template>
                     </v-text-field>
                 </v-col>
             </v-row>
+
         </div>
 
         <v-btn @click="calculateMortgage" class="calculate-btn">Calculate</v-btn>
@@ -123,187 +125,192 @@
 </template>
 
 <script>
-// import { formatCurrency } from '@/utils/currencyUtils'; // Assuming formatCurrency is a utility function
+import { formatCurrency } from '@/utils/currencyUtils'; // Assuming formatCurrency is a utility function
 
 export default {
-  data() {
-    return {
-      propertyPrice: '500000',
-      loanAmount: 0,
-      interestRate: '4',
-      loanTenure: '30',
-      monthlyPayment: null,
-      downPayment: 90,
-      downPaymentType: '%',
-      downpaymentPercentage: 0,
-      loanPercentage: 0,
-      interestPercentage: 0,
-      principalPercentage: 0,
-      totalDownPayment: 0,
-      maskedPrice: '',
-      maskedDown: ''
-    };
-  },
-  watch: {
-    // Watching multiple data properties
-    downPayment(newDownPayment) {
-      this.updateLoanAmount(newDownPayment, this.downPaymentType, this.propertyPrice, this.interestRate);
+    data() {
+        return {
+            propertyPrice: '',
+            loanAmount: 0,
+            interestRate: '',
+            loanTenure: '',
+            monthlyPayment: null,
+            downPayment: 0,
+            downPaymentType: '%',
+            downpaymentPercentage: 0,
+            loanPercentage: 0,
+            interestPercentage: 0,
+            principalPercentage: 0,
+            totalDownPayment: 0,
+            maskedPrice: '',
+            maskedDown: ''
+        };
     },
-    downPaymentType() {
-      this.updateLoanAmount(this.downPayment, this.downPaymentType, this.propertyPrice, this.interestRate);
-    },
-    propertyPrice() {
-      this.updateLoanAmount(this.downPayment, this.downPaymentType, this.propertyPrice, this.interestRate);
-    },
-    interestRate() {
-      this.updateLoanAmount(this.downPayment, this.downPaymentType, this.propertyPrice, this.interestRate);
-    }
-  },
-  methods: {
-    // Function to handle input and update both masked and actual values
-    handleInput(field, event) {
-      let rawValue = event.target.value.replace(/[^\d.]/g, '');
-
-      if (rawValue.startsWith('-')) {
-        rawValue = rawValue.slice(1);
-      }
-
-      if (field === 'price') {
-        this.propertyPrice = parseInt(rawValue, 10) || 0;
-        this.maskedPrice = formatCurrency(rawValue);
-      } else if (field === 'down') {
-        this.downPayment = parseInt(rawValue, 10) || 0;
-        this.maskedDown = formatCurrency(rawValue);
-      } else if (field === 'interest') {
-        this.interestRate = rawValue;
-      } else if (field === 'tenure') {
-        this.loanTenure = rawValue;
-      }
-    },
-
-    // Function to calculate the mortgage payment
-    calculateMortgage() {
-      if (!this.propertyPrice || !this.interestRate || !this.loanTenure || !this.downPayment || !this.downPaymentType) {
-        this.monthlyPayment = null;
-        alert("Please fill all the fields correctly.");
-        return;
-      }
-
-      let downPaymentAmount;
-
-      // Handle down payment based on type
-      if (this.downPaymentType === "%") {
-        if (this.downPayment < 0 || this.downPayment > 100) {
-          alert("Down payment percentage must be between 0 and 100.");
-          return;
+    watch: {
+        // Watching multiple data properties
+        downPayment(newDownPayment) {
+            this.updateLoanAmount(newDownPayment, this.downPaymentType, this.propertyPrice, this.interestRate);
+        },
+        downPaymentType() {
+            this.updateLoanAmount(this.downPayment, this.downPaymentType, this.propertyPrice, this.interestRate);
+        },
+        propertyPrice() {
+            this.updateLoanAmount(this.downPayment, this.downPaymentType, this.propertyPrice, this.interestRate);
+        },
+        interestRate() {
+            this.updateLoanAmount(this.downPayment, this.downPaymentType, this.propertyPrice, this.interestRate);
         }
-        downPaymentAmount = (this.propertyPrice * this.downPayment) / 100;
-      } else if (this.downPaymentType === "RM") {
-        if (this.downPayment < 0 || this.downPayment > this.propertyPrice) {
-          alert("Down payment amount must be a positive value and less than or equal to the property price.");
-          return;
+    },
+    methods: {
+        // Function to handle input and update both masked and actual values
+        handleInput(field, value) {
+            console.log("AAA", value)
+            let rawValue = value.replace(/[^\d.-]/g, ''); // Remove invalid characters
+            console.log("BBB", rawValue)
+
+            // Ensure only one '-' and one '.' at appropriate places
+            if (rawValue.indexOf('-') > 0) rawValue = rawValue.replace('-', '');
+            const parts = rawValue.split('.');
+            if (parts.length > 2) rawValue = parts[0] + '.' + parts[1];
+
+            // Update the field based on type
+            if (field === 'price') {
+                this.propertyPrice = parseFloat(rawValue) || 0;
+                this.maskedPrice = formatCurrency(rawValue); // Use utility to format currency
+            } else if (field === 'down') {
+                this.downPayment = parseFloat(rawValue) || 0;
+                this.maskedDown = formatCurrency(rawValue);
+            } else if (field === 'interest') {
+                this.interestRate = rawValue;
+            } else if (field === 'tenure') {
+                this.loanTenure = rawValue;
+            }
+        },
+
+        // Function to calculate the mortgage payment
+        calculateMortgage() {
+            if (!this.propertyPrice || !this.interestRate || !this.loanTenure || !this.downPayment || !this.downPaymentType) {
+                this.monthlyPayment = null;
+                alert("Please fill all the fields correctly.");
+                return;
+            }
+
+            let downPaymentAmount;
+
+            // Handle down payment based on type
+            if (this.downPaymentType === "%") {
+                if (this.downPayment < 0 || this.downPayment > 100) {
+                    alert("Down payment percentage must be between 0 and 100.");
+                    return;
+                }
+                downPaymentAmount = (this.propertyPrice * this.downPayment) / 100;
+            } else if (this.downPaymentType === "RM") {
+                if (this.downPayment < 0 || this.downPayment > this.propertyPrice) {
+                    alert("Down payment amount must be a positive value and less than or equal to the property price.");
+                    return;
+                }
+                downPaymentAmount = this.downPayment;
+            } else {
+                alert("Invalid down payment type. Please select '%' or 'RM'.");
+                return;
+            }
+
+            // Calculate loan amount based on down payment
+            const loanAmountActual = this.propertyPrice - downPaymentAmount;
+            const annualInterestRate = this.interestRate / 100;
+            const monthlyInterestRate = annualInterestRate / 12;
+            const totalPayments = this.loanTenure * 12;
+
+            if (loanAmountActual <= 0 || annualInterestRate < 0 || totalPayments <= 0) {
+                this.monthlyPayment = null;
+                alert("Please enter valid positive values.");
+                return;
+            }
+
+            if (monthlyInterestRate === 0) {
+                this.monthlyPayment = (loanAmountActual / totalPayments).toFixed(2);
+                this.principalPercentage = "100.00";
+                this.interestPercentage = "0.00";
+                return;
+            }
+
+            // Calculate monthly mortgage payment
+            const mortgagePayment =
+                (loanAmountActual * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalPayments))) /
+                (Math.pow(1 + monthlyInterestRate, totalPayments) - 1);
+
+            this.monthlyPayment = parseFloat(mortgagePayment.toFixed(2));
+
+            // Calculate total amounts
+            const totalAmountPaid = mortgagePayment * totalPayments;
+            const totalInterestPaid = totalAmountPaid - loanAmountActual;
+
+            // Calculate percentages
+            this.principalPercentage = ((loanAmountActual / totalAmountPaid) * 100).toFixed(0);
+            this.interestPercentage = ((totalInterestPaid / totalAmountPaid) * 100).toFixed(0);
+            this.downpaymentPercentage = ((downPaymentAmount / this.propertyPrice) * 100).toFixed(0);
+            this.loanPercentage = ((loanAmountActual / this.propertyPrice) * 100).toFixed(0);
+            this.totalDownPayment = Number(downPaymentAmount).toLocaleString();
+            this.loanAmount = Number(loanAmountActual).toLocaleString();
+        },
+
+        // Function to update loan amount based on down payment and type
+        updateLoanAmount(newDownPayment, downPaymentType, propertyPrice, interestRate) {
+            if (downPaymentType === '%') {
+                if (newDownPayment > 100) {
+                    alert('The down payment percentage cannot exceed 100%. Please enter a valid percentage.');
+                    this.downPayment = '';
+                    this.maskedDown = '';
+                    return;
+                }
+
+                const calculatedDownPayment = (propertyPrice * newDownPayment) / 100;
+                this.loanAmount = propertyPrice - calculatedDownPayment;
+            }
+
+            if (this.loanAmount < 0) {
+                alert('Down payment cannot exceed the property price.');
+                this.loanAmount = '';
+                this.downPayment = '';
+            }
+
+            if (interestRate > 100) {
+                alert('The interest rate cannot exceed 100%. Please enter a valid interest rate.');
+                this.interestRate = '';
+            }
+        },
+
+        // Function to toggle the down payment type
+        toggleDownPaymentType(type) {
+            this.downPaymentType = type;
+            this.downPayment = '';
+            this.maskedDown = '';
+        },
+
+        // Function to format the currency
+        formatCurrency(value) {
+            return formatCurrency(value);
         }
-        downPaymentAmount = this.downPayment;
-      } else {
-        alert("Invalid down payment type. Please select '%' or 'RM'.");
-        return;
-      }
-
-      // Calculate loan amount based on down payment
-      const loanAmountActual = this.propertyPrice - downPaymentAmount;
-      const annualInterestRate = this.interestRate / 100;
-      const monthlyInterestRate = annualInterestRate / 12;
-      const totalPayments = this.loanTenure * 12;
-
-      if (loanAmountActual <= 0 || annualInterestRate < 0 || totalPayments <= 0) {
-        this.monthlyPayment = null;
-        alert("Please enter valid positive values.");
-        return;
-      }
-
-      if (monthlyInterestRate === 0) {
-        this.monthlyPayment = (loanAmountActual / totalPayments).toFixed(2);
-        this.principalPercentage = "100.00";
-        this.interestPercentage = "0.00";
-        return;
-      }
-
-      // Calculate monthly mortgage payment
-      const mortgagePayment =
-        (loanAmountActual * (monthlyInterestRate * Math.pow(1 + monthlyInterestRate, totalPayments))) /
-        (Math.pow(1 + monthlyInterestRate, totalPayments) - 1);
-
-      this.monthlyPayment = parseFloat(mortgagePayment.toFixed(2));
-
-      // Calculate total amounts
-      const totalAmountPaid = mortgagePayment * totalPayments;
-      const totalInterestPaid = totalAmountPaid - loanAmountActual;
-
-      // Calculate percentages
-      this.principalPercentage = ((loanAmountActual / totalAmountPaid) * 100).toFixed(0);
-      this.interestPercentage = ((totalInterestPaid / totalAmountPaid) * 100).toFixed(0);
-      this.downpaymentPercentage = ((downPaymentAmount / this.propertyPrice) * 100).toFixed(0);
-      this.loanPercentage = ((loanAmountActual / this.propertyPrice) * 100).toFixed(0);
-      this.totalDownPayment = Number(downPaymentAmount).toLocaleString();
-      this.loanAmount = Number(loanAmountActual).toLocaleString();
     },
-
-    // Function to update loan amount based on down payment and type
-    updateLoanAmount(newDownPayment, downPaymentType, propertyPrice, interestRate) {
-      if (downPaymentType === '%') {
-        if (newDownPayment > 100) {
-          alert('The down payment percentage cannot exceed 100%. Please enter a valid percentage.');
-          this.downPayment = '';
-          this.maskedDown = '';
-          return;
+    computed: {
+        // Computed properties for interest and principal amounts
+        interestAmount() {
+            const monthlyInterestRate = this.interestRate / 100 / 12;
+            const interest = this.monthlyPayment * monthlyInterestRate;
+            return parseFloat(interest.toFixed(2));
+        },
+        principalAmount() {
+            const principal = this.monthlyPayment - this.interestAmount;
+            return parseFloat(principal.toFixed(2));
         }
-
-        const calculatedDownPayment = (propertyPrice * newDownPayment) / 100;
-        this.loanAmount = propertyPrice - calculatedDownPayment;
-      }
-
-      if (this.loanAmount < 0) {
-        alert('Down payment cannot exceed the property price.');
-        this.loanAmount = '';
-        this.downPayment = '';
-      }
-
-      if (interestRate > 100) {
-        alert('The interest rate cannot exceed 100%. Please enter a valid interest rate.');
-        this.interestRate = '';
-      }
-    },
-
-    // Function to toggle the down payment type
-    toggleDownPaymentType(type) {
-      this.downPaymentType = type;
-      this.downPayment = '';
-      this.maskedDown = '';
-    },
-
-    // Function to format the currency
-    formatCurrency(value) {
-      return formatCurrency(value);
     }
-  },
-  computed: {
-    // Computed properties for interest and principal amounts
-    interestAmount() {
-      const monthlyInterestRate = this.interestRate / 100 / 12;
-      const interest = this.monthlyPayment * monthlyInterestRate;
-      return parseFloat(interest.toFixed(2));
-    },
-    principalAmount() {
-      const principal = this.monthlyPayment - this.interestAmount;
-      return parseFloat(principal.toFixed(2));
-    }
-  }
 };
 </script>
 
 
 <style scoped>
 .mortgage-card {
+    width: 375px !important;
     padding: 0px;
     border: none;
     box-shadow: none;
@@ -315,7 +322,7 @@ export default {
     background-color: white;
     border: 1px solid #EDEDF3;
     border-radius: 8px;
-    margin-bottom: 16px;
+    margin-bottom: 24px;
     padding-bottom: 16px;
 }
 
@@ -409,6 +416,7 @@ export default {
     margin-bottom: 16px;
     background-color: #FAFBFB;
     padding: 20px auto;
+    margin-top: 4px;
 }
 
 .custom-label {
@@ -518,7 +526,7 @@ export default {
 }
 
 .calculate-btn {
-    width: 100%;
+    width: 343px;
     height: 52px !important;
     background-color: #00B5B0 !important;
     color: #F9F8F8;
@@ -531,9 +539,19 @@ export default {
     margin-bottom: 24px;
 }
 
-/* .v-btn:not(.v-btn--round).v-size--default {
-    height: 52px;
-    min-width: 64px;
-    padding: 0 16px;
-} */
+.row {
+    display: flex;
+    flex-wrap: nowrap;
+    flex: 1 1 auto;
+    margin: -12px;
+}
+
+.v-application .rounded-lg {
+    border-radius: 8px !important;
+    background: white;
+}
+
+.prepend-style {
+    margin-top: 6px;
+}
 </style>

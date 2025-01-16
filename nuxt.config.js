@@ -8,6 +8,7 @@ export default {
 
   // Define global CSS
   css: [
+    'vuetify/dist/vuetify.min.css',
     '~/assets/css/main.css', // Add your global CSS file here
   ],
 
@@ -25,6 +26,14 @@ export default {
       icons: {
         iconfont: 'mdi', // Make sure 'mdi' is set as the icon font
       }
+    },
+    themes: {
+      light: {
+        primary: '#1976D2',
+        secondary: '#424242',
+        accent: '#82B1FF',
+        error: '#FF5252',
+      },
     },
   },
 

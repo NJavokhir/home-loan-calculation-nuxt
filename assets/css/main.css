@@ -3,9 +3,9 @@ html {
   font-family: 'Inter', sans-serif !important;
   margin: 0 auto;
   padding: 0;
-  max-width: 375px !important;
   height: 100%;
   box-sizing:content-box;
+  background-color: rgb(244, 244, 247);
 }
 
 [class^="v-"]::before,
