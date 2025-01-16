@@ -1,5 +1,8 @@
 export const formatCurrency = (value) => {
     let rawValue = value.replace(/[^\d.-]/g, '');
+    if (!rawValue) {
+      return
+    }
   
     let [integerPart, decimalPart] = rawValue.split('.');
   

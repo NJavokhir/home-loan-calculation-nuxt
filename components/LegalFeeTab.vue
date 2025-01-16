@@ -136,13 +136,23 @@ export default {
                 rawValue = rawValue.slice(1);
             }
 
-            if (field === "price") {
-                this.propertyPrice = parseInt(rawValue.replace(/[^0-9]/g, ""), 10) || 0;
-                this.maskedPrice = formatCurrency(rawValue);
-            } else if (field === "loan") {
-                this.loanAmountActual =
-                    parseInt(rawValue.replace(/[^0-9]/g, ""), 10) || 0;
-                this.maskedLoan = formatCurrency(rawValue);
+            if (!rawValue) {
+                this.$nextTick(() => {
+                    if (field === "price") {
+                        this.maskedPrice = rawValue;
+                    } else if (field === "loan") {
+                        this.maskedLoan = rawValue;
+                    }
+                });
+            } else {
+                if (field === "price") {
+                    this.propertyPrice = parseInt(rawValue.replace(/[^0-9]/g, ""), 10) || 0;
+                    this.maskedPrice = formatCurrency(rawValue);
+                } else if (field === "loan") {
+                    this.loanAmountActual =
+                        parseInt(rawValue.replace(/[^0-9]/g, ""), 10) || 0;
+                    this.maskedLoan = formatCurrency(rawValue);
+                }
             }
         },
         // Toggle loan amount type

@@ -52,7 +52,8 @@
                 </template>
             </v-text-field>
 
-            <v-label class="custom-label">Balance in Account II <span style="color: red; font-size: 12px;">*</span></v-label>
+            <v-label class="custom-label">Balance in Account II <span
+                    style="color: red; font-size: 12px;">*</span></v-label>
             <v-text-field v-model="maskedBalance" type="text" class="input-field" hide-details hide-spin-buttons
                 placeholder="Balance in Account II" @input="handleInput('balance', $event)">
                 <template #prepend-inner>
@@ -116,15 +117,28 @@ export default {
             if (rawValue.startsWith('-')) {
                 rawValue = rawValue.slice(1);
             }
-            if (field === 'price') {
-                this.propertyPrice = parseInt(rawValue.replace(/[^0-9]/g, ''), 10) || 0;
-                this.maskedPrice = formatCurrency(rawValue);
-            } else if (field === 'loan') {
-                this.loanAmount = parseInt(rawValue.replace(/[^0-9]/g, ''), 10) || 0;
-                this.maskedLoan = formatCurrency(rawValue);
-            } else if (field === 'balance') {
-                this.balanceAccount = parseInt(rawValue.replace(/[^0-9]/g, ''), 10) || 0;
-                this.maskedBalance = formatCurrency(rawValue);
+
+            if (!rawValue) {
+                this.$nextTick(() => {
+                    if (field === 'price') {
+                        this.maskedPrice = rawValue;
+                    } else if (field === 'loan') {
+                        this.maskedLoan = rawValue;
+                    } else if (field === 'balance') {
+                        this.maskedBalance = rawValue;
+                    }
+                });
+            } else {
+                if (field === 'price') {
+                    this.propertyPrice = parseInt(rawValue.replace(/[^0-9]/g, ''), 10) || 0;
+                    this.maskedPrice = formatCurrency(rawValue);
+                } else if (field === 'loan') {
+                    this.loanAmount = parseInt(rawValue.replace(/[^0-9]/g, ''), 10) || 0;
+                    this.maskedLoan = formatCurrency(rawValue);
+                } else if (field === 'balance') {
+                    this.balanceAccount = parseInt(rawValue.replace(/[^0-9]/g, ''), 10) || 0;
+                    this.maskedBalance = formatCurrency(rawValue);
+                }
             }
         },
         toggleDownPaymentType(type) {

@@ -159,31 +159,42 @@ export default {
         },
         interestRate() {
             this.updateLoanAmount(this.downPayment, this.downPaymentType, this.propertyPrice, this.interestRate);
-        }
+        },
     },
     methods: {
         // Function to handle input and update both masked and actual values
         handleInput(field, value) {
-            console.log("AAA", value)
-            let rawValue = value.replace(/[^\d.-]/g, ''); // Remove invalid characters
-            console.log("BBB", rawValue)
+            let rawValue = value.replace(/[^\d.-]/g, '');
 
-            // Ensure only one '-' and one '.' at appropriate places
-            if (rawValue.indexOf('-') > 0) rawValue = rawValue.replace('-', '');
-            const parts = rawValue.split('.');
-            if (parts.length > 2) rawValue = parts[0] + '.' + parts[1];
+            if (rawValue.startsWith('-')) {
+                rawValue = rawValue.slice(1);
+            }
 
-            // Update the field based on type
-            if (field === 'price') {
-                this.propertyPrice = parseFloat(rawValue) || 0;
-                this.maskedPrice = formatCurrency(rawValue); // Use utility to format currency
-            } else if (field === 'down') {
-                this.downPayment = parseFloat(rawValue) || 0;
-                this.maskedDown = formatCurrency(rawValue);
-            } else if (field === 'interest') {
-                this.interestRate = rawValue;
-            } else if (field === 'tenure') {
-                this.loanTenure = rawValue;
+            if (!rawValue) {
+                this.$nextTick(() => {
+                    if (field === 'price') {
+                        this.maskedPrice = rawValue;
+                    } else if (field === 'down') {
+                        this.maskedDown = rawValue;
+                    } else if (field === 'interest') {
+                        this.interestRate = rawValue;
+                    } else if (field === 'tenure') {
+                        this.loanTenure = rawValue;
+                    }
+                });
+            } else {
+                // Update the field based on type
+                if (field === 'price') {
+                    this.propertyPrice = parseFloat(rawValue) || 0;
+                    this.maskedPrice = formatCurrency(rawValue); // Use utility to format currency
+                } else if (field === 'down') {
+                    this.downPayment = parseFloat(rawValue) || 0;
+                    this.maskedDown = formatCurrency(rawValue);
+                } else if (field === 'interest') {
+                    this.interestRate = rawValue;
+                } else if (field === 'tenure') {
+                    this.loanTenure = rawValue;
+                }
             }
         },
 
