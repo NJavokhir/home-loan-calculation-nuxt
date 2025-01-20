@@ -115,8 +115,8 @@
         <!-- Display Result if Monthly Payment is Calculated -->
         <div v-if="monthlyPayment !== null">
             <h4 class="font-weight-medium text-left mb-4">Result</h4>
-            <div class="d-flex justify-space-between align-center w-full rounded-lg py-4 px-4 bg-white mb-4">
-                <p class="text-caption">Monthly Payment (RM): </p>
+            <div class="d-flex justify-space-between align-center w-full rounded-lg pt-4 px-4 bg-white mb-4">
+                <span class="text-caption">Monthly Payment (RM): </span>
                 <strong>{{ monthlyPayment }}</strong>
             </div>
         </div>
@@ -358,9 +358,10 @@ export default {
 }
 
 .text-caption {
-    font-size: 12px;
-    line-height: 22px;
-    font-weight: 500;
+    font-size: 12px !important;
+    line-height: 24px !important;
+    font-weight: 400 !important;
+    color: #6B6F89 !important;
 }
 
 .progress-container {

@@ -2,7 +2,7 @@
   <v-app>
     <div class="toolbar-style">
       <img @click="goBack" src="@/assets/icon.svg" alt="">
-      Calculator
+      <span>Calculator</span>
     </div>
     <v-container>
       <v-tabs v-model="activeTab" hide-slider align-tabs="center" class="mb-6" background-color="#FAFBFB">
@@ -71,7 +71,7 @@ export default {
   margin-right: auto;
   margin-left: auto;
   background-color: #FAFBFB !important;
-  height: 100vh;
+  height: 100%;
 }
 
 .v-sheet.v-card:not(.v-sheet--outlined) {

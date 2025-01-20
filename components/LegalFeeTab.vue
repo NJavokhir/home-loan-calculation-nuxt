@@ -59,7 +59,7 @@
                     <strong>{{ stampDutySPA.toLocaleString() }}</strong>
                 </div>
                 <div class="d-flex justify-space-between align-center">
-                    <p class="text-caption">Total (RM) </p>
+                    <span class="text-caption caption-total">Total (RM) </span>
                     <strong>{{ totalLegalFee.toLocaleString() }}</strong>
                 </div>
             </div>
@@ -73,7 +73,7 @@
                     <strong>{{ loanStampDuty.toLocaleString() }}</strong>
                 </div>
                 <div class="d-flex justify-space-between align-center">
-                    <p class="text-caption">Total (RM) </p>
+                    <span class="text-caption caption-total">Total (RM) </span>
                     <strong>{{ totalLoanFee.toLocaleString() }}</strong>
                 </div>
             </div>
@@ -302,10 +302,8 @@ a {
     position: relative;
 }
 
-/* Checkmark when checked */
 .buying-house input[type="checkbox"]:checked+.checkmark {
     background-color: #00B5B0;
-    /* Green color when checked */
     border-color: #00B5B0;
 }
 
@@ -321,7 +319,6 @@ a {
     transform: rotate(45deg);
 }
 
-/* Hover effect */
 .buying-house label:hover .checkmark {
     border-color: #777;
     background-color: #e8e8e8;
@@ -470,5 +467,18 @@ a {
 
 .prepend-style {
     margin-top: 6px;
+}
+
+.text-caption {
+    font-size: 12px !important;
+    line-height: 24px !important;
+    font-weight: 400 !important;
+    color: #6B6F89 !important;
+}
+
+.caption-total {
+    font-size: 14px !important;
+    color: #6B6F89;
+    font-weight: 700 !important;
 }
 </style>

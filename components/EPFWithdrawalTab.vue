@@ -67,9 +67,9 @@
         <!-- Display result after calculation -->
         <div v-if="fundCanBeWithdrawn">
             <h4 class="font-weight-medium text-left mb-4">Result</h4>
-            <div class="d-flex justify-space-between align-center w-full rounded-lg py-4 px-4 bg-white mb-4"
+            <div class="d-flex justify-space-between align-center w-full rounded-lg pt-4 px-4 bg-white mb-4"
                 v-if="fundCanBeWithdrawn !== null">
-                <p class="text-caption">Fund can be withdraw (RM): </p>
+                <span class="text-caption">Fund can be withdraw (RM): </span>
                 <strong>{{ fundCanBeWithdrawn }}</strong>
             </div>
         </div>
@@ -262,6 +262,13 @@ export default {
     font-weight: 400;
 }
 
+.text-caption {
+    font-size: 12px !important;
+    line-height: 24px !important;
+    font-weight: 400 !important;
+    color: #6B6F89 !important;
+}
+
 .calculate-btn {
     width: 343px;
     height: 52px !important;
@@ -290,10 +297,6 @@ export default {
     color: #F9F8F8 !important;
 }
 
-
-
-
-/* Radio Group Styling */
 .custom-radio-group {
     display: flex;
     flex-wrap: row;
@@ -301,7 +304,6 @@ export default {
     margin-bottom: 24px;
 }
 
-/* Label Styling */
 .radio-container {
     width: 167px;
     display: flex;
@@ -315,13 +317,11 @@ export default {
     transition: border-color 0.3s ease;
 }
 
-/* Border change when radio is selected */
 .radio-container input[type="radio"]:checked+.custom-radio {
     border-color: #00b5b0;
     background-color: #00b5b0;
 }
 
-/* Custom Radio Circle */
 .custom-radio {
     width: 35px !important;
     height: 20px !important;
@@ -348,13 +348,11 @@ export default {
     transition: opacity 0.3s ease;
 }
 
-/* Inner dot when selected */
 .radio-container input[type="radio"]:checked+.custom-radio::after {
     background-color: white;
     opacity: 1;
 }
 
-/* Text Styling */
 .radio-label {
     font-size: 12px;
     font-weight: 400;
@@ -371,7 +369,6 @@ export default {
     color: #6b6f89;
 }
 
-/* Hover Effect */
 .radio-container-checked {
     border: 1px solid #00b5b0 !important;
 }
